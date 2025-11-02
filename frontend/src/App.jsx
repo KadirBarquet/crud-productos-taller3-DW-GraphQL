@@ -3,64 +3,73 @@ import { Toaster } from 'react-hot-toast';
 import { ApolloProvider } from '@apollo/client/react';
 import apolloClient from './api/apolloClient';
 import { AuthProvider } from './context/AuthContext';
-import Navbar from './components/Navbar';
+import { ApiModeProvider } from './context/ApiModeContext';
+import NavbarWithMode from './components/NavbarWithMode';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProductsRouter from './components/ProductsRouter';
+
+// Páginas
 import Home from './pages/Home';
-import Register from './pages/Register';
 import Login from './pages/Login';
-import Products from './pages/Products'
-import LoginGraphQL from './pages/LoginGraphQL';
-import ProductsGraphQL from './pages/ProductsGraphQL';
+import Register from './pages/Register';
+
 import './App.css';
 
 function App() {
     return (
         <ApolloProvider client={apolloClient}>
-            <AuthProvider>
-                <Router>
-                    <div className="min-h-screen bg-gray-50">
-                        <Navbar />
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/login" element={<LoginGraphQL />} />
-                            <Route path="/registro" element={<Register />} />
-                            <Route
-                                path="/productos"
-                                element={
-                                    <ProtectedRoute>
-                                        <ProductsGraphQL />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route path="*" element={<Navigate to="/" />} />
-                        </Routes>
-                        <Toaster
-                            position="top-right"
-                            toastOptions={{
-                                duration: 3000,
-                                style: {
-                                    background: '#363636',
-                                    color: '#fff',
-                                },
-                                success: {
+            <ApiModeProvider>
+                <AuthProvider>
+                    <Router>
+                        <div className="min-h-screen bg-gray-50">
+                            <NavbarWithMode />
+                            <Routes>
+                                {/* Páginas públicas */}
+                                <Route path="/" element={<Home />} />
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/registro" element={<Register />} />
+
+                                {/* Ruta de productos (dinámica según el modo) */}
+                                <Route
+                                    path="/productos"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ProductsRouter />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                {/* Redirección por defecto */}
+                                <Route path="*" element={<Navigate to="/" />} />
+                            </Routes>
+                            <Toaster
+                                position="top-right"
+                                toastOptions={{
                                     duration: 3000,
-                                    iconTheme: {
-                                        primary: '#4ade80',
-                                        secondary: '#fff',
+                                    style: {
+                                        background: '#363636',
+                                        color: '#fff',
                                     },
-                                },
-                                error: {
-                                    duration: 4000,
-                                    iconTheme: {
-                                        primary: '#ef4444',
-                                        secondary: '#fff',
+                                    success: {
+                                        duration: 3000,
+                                        iconTheme: {
+                                            primary: '#4ade80',
+                                            secondary: '#fff',
+                                        },
                                     },
-                                },
-                            }}
-                        />
-                    </div>
-                </Router>
-            </AuthProvider>
+                                    error: {
+                                        duration: 4000,
+                                        iconTheme: {
+                                            primary: '#ef4444',
+                                            secondary: '#fff',
+                                        },
+                                    },
+                                }}
+                            />
+                        </div>
+                    </Router>
+                </AuthProvider>
+            </ApiModeProvider>
         </ApolloProvider>
     );
 }
