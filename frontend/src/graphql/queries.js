@@ -1,27 +1,37 @@
 import { gql } from '@apollo/client';
 
 // ============================================
-// QUERIES DE USUARIO
+// MUTATIONS DE USUARIO
 // ============================================
 
-export const GET_PERFIL = gql`
-  query GetPerfil {
-    perfil {
-      id
-      nombre
-      email
-      fecha_registro
+export const REGISTRO = gql`
+  mutation Registro($nombre: String!, $email: String!, $password: String!) {
+    registro(nombre: $nombre, email: $email, password: $password) {
+      success
+      message
+      usuario {
+        id
+        nombre
+        email
+        fecha_registro
+      }
+      token
     }
   }
 `;
 
-export const GET_USUARIOS = gql`
-  query GetUsuarios {
-    usuarios {
-      id
-      nombre
-      email
-      fecha_registro
+export const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      success
+      message
+      usuario {
+        id
+        nombre
+        email
+        fecha_registro
+      }
+      token
     }
   }
 `;
@@ -70,42 +80,6 @@ export const GET_PRODUCTO = gql`
         createdAt
         updatedAt
       }
-    }
-  }
-`;
-
-// ============================================
-// MUTATIONS DE USUARIO
-// ============================================
-
-export const REGISTRO = gql`
-  mutation Registro($nombre: String!, $email: String!, $password: String!) {
-    registro(nombre: $nombre, email: $email, password: $password) {
-      success
-      message
-      usuario {
-        id
-        nombre
-        email
-        fecha_registro
-      }
-      token
-    }
-  }
-`;
-
-export const LOGIN = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      success
-      message
-      usuario {
-        id
-        nombre
-        email
-        fecha_registro
-      }
-      token
     }
   }
 `;

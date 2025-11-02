@@ -1,30 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useApiMode } from '../context/ApiModeContext';
-import { LogOut, User, Package, Database, Zap } from 'lucide-react';
+import { LogOut, User, Package } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const NavbarWithMode = () => {
+const Navbar = () => {
     const { user, logout, isAuthenticated } = useAuth();
-    const { apiMode, changeMode, isRest, isGraphQL } = useApiMode();
     const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
         toast.success('Sesión cerrada exitosamente');
-        navigate('/');
-    };
-
-    const handleModeChange = (newMode) => {
-        if (newMode === apiMode) return;
-        
-        changeMode(newMode);
-        toast.success(`Cambiado a modo ${newMode === 'rest' ? 'REST API' : 'GraphQL'}`);
-        
-        // Si está autenticado, redirigir a productos
-        if (isAuthenticated) {
-            navigate('/productos');
-        }
+        navigate('/login');
     };
 
     return (
@@ -39,32 +25,6 @@ const NavbarWithMode = () => {
                     </div>
 
                     <div className="flex items-center space-x-4">
-                        {/* Selector de Modo */}
-                        <div className="flex items-center bg-gray-100 rounded-lg p-1">
-                            <button
-                                onClick={() => handleModeChange('rest')}
-                                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition ${
-                                    isRest
-                                        ? 'bg-blue-600 text-white shadow-md'
-                                        : 'text-gray-700 hover:bg-gray-200'
-                                }`}
-                            >
-                                <Database className="h-4 w-4" />
-                                <span>REST</span>
-                            </button>
-                            <button
-                                onClick={() => handleModeChange('graphql')}
-                                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition ${
-                                    isGraphQL
-                                        ? 'bg-purple-600 text-white shadow-md'
-                                        : 'text-gray-700 hover:bg-gray-200'
-                                }`}
-                            >
-                                <Zap className="h-4 w-4" />
-                                <span>GraphQL</span>
-                            </button>
-                        </div>
-
                         {isAuthenticated ? (
                             <>
                                 <Link
@@ -108,4 +68,4 @@ const NavbarWithMode = () => {
     );
 };
 
-export default NavbarWithMode;
+export default Navbar;
