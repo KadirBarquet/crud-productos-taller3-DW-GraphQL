@@ -6,9 +6,11 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
-import Login from './pages/Login';
 import Register from './pages/Register';
-import Products from './pages/Products';
+import Login from './pages/Login';
+import Products from './pages/Products'
+import LoginGraphQL from './pages/LoginGraphQL';
+import ProductsGraphQL from './pages/ProductsGraphQL';
 import './App.css';
 
 function App() {
@@ -20,13 +22,13 @@ function App() {
                         <Navbar />
                         <Routes>
                             <Route path="/" element={<Home />} />
-                            <Route path="/login" element={<Login />} />
+                            <Route path="/login" element={<LoginGraphQL />} />
                             <Route path="/registro" element={<Register />} />
                             <Route
                                 path="/productos"
                                 element={
                                     <ProtectedRoute>
-                                        <Products />
+                                        <ProductsGraphQL />
                                     </ProtectedRoute>
                                 }
                             />
