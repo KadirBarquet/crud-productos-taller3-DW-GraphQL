@@ -175,15 +175,30 @@ const ProductsGraphQL = () => {
         setSelectedProductId(null);
     };
 
+    // Formatear fecha mejorado con manejo de errores
     const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleDateString('es-EC', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        if (!dateString || dateString === 'null' || dateString === null || dateString === undefined) {
+            return 'Sin fecha registrada';
+        }
+        
+        try {
+            const date = new Date(dateString);
+            // Verificar si la fecha es válida
+            if (isNaN(date.getTime())) {
+                return 'Sin fecha registrada';
+            }
+            
+            return date.toLocaleDateString('es-EC', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (error) {
+            console.error('Error al formatear fecha:', error);
+            return 'Sin fecha registrada';
+        }
     };
 
     // Loading state
@@ -396,32 +411,29 @@ const ProductsGraphQL = () => {
                                         </p>
                                     </div>
 
-                                    {(productDetail.createdAt || productDetail.fecha_creacion) && (
-                                        <div className="border-t pt-4">
-                                            <div className="flex items-center space-x-2 mb-3">
-                                                <Calendar className="h-5 w-5 text-gray-600" />
-                                                <h3 className="text-sm font-semibold text-gray-700 uppercase">
-                                                    Información de Registro
-                                                </h3>
+                                    {/* Fechas */}
+                                    <div className="border-t pt-4">
+                                        <div className="flex items-center space-x-2 mb-3">
+                                            <Calendar className="h-5 w-5 text-gray-600" />
+                                            <h3 className="text-sm font-semibold text-gray-700 uppercase">
+                                                Información de Registro
+                                            </h3>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-600">Fecha de creación:</span>
+                                                <span className="font-semibold text-gray-900">
+                                                    {formatDate(productDetail.createdAt || productDetail.fecha_creacion)}
+                                                </span>
                                             </div>
-                                            <div className="space-y-2 text-sm">
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Fecha de creación:</span>
-                                                    <span className="font-semibold text-gray-900">
-                                                        {formatDate(productDetail.createdAt || productDetail.fecha_creacion)}
-                                                    </span>
-                                                </div>
-                                                {(productDetail.updatedAt || productDetail.fecha_actualizacion) && (
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Última actualización:</span>
-                                                        <span className="font-semibold text-gray-900">
-                                                            {formatDate(productDetail.updatedAt || productDetail.fecha_actualizacion)}
-                                                        </span>
-                                                    </div>
-                                                )}
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-600">Última actualización:</span>
+                                                <span className="font-semibold text-gray-900">
+                                                    {formatDate(productDetail.updatedAt || productDetail.fecha_actualizacion)}
+                                                </span>
                                             </div>
                                         </div>
-                                    )}
+                                    </div>
 
                                     <div className="bg-gray-100 p-3 rounded-lg">
                                         <p className="text-xs text-gray-600">

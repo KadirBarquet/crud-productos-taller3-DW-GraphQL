@@ -37,7 +37,6 @@ const Products = () => {
         }
     };
 
-    // 🆕 Función para obtener detalle del producto
     const fetchProductDetail = async (id) => {
         setLoadingDetail(true);
         setShowDetailModal(true);
@@ -125,22 +124,35 @@ const Products = () => {
         });
     };
 
-    // 🆕 Cerrar modal de detalles
     const handleCloseDetailModal = () => {
         setShowDetailModal(false);
         setProductDetail(null);
     };
 
-    // 🆕 Formatear fecha
+    // Formatear fecha mejorado con manejo de errores
     const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleDateString('es-EC', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        if (!dateString || dateString === 'null' || dateString === null || dateString === undefined) {
+            return 'Sin fecha registrada';
+        }
+        
+        try {
+            const date = new Date(dateString);
+            // Verificar si la fecha es válida
+            if (isNaN(date.getTime())) {
+                return 'Sin fecha registrada';
+            }
+            
+            return date.toLocaleDateString('es-EC', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (error) {
+            console.error('Error al formatear fecha:', error);
+            return 'Sin fecha registrada';
+        }
     };
 
     const filteredProductos = productos.filter(p =>
@@ -234,7 +246,6 @@ const Products = () => {
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-2">
-                                        {/* 🆕 Botón Ver Detalles */}
                                         <button
                                             onClick={() => fetchProductDetail(producto.id || producto._id)}
                                             className="flex items-center justify-center space-x-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition text-sm"
@@ -266,7 +277,7 @@ const Products = () => {
                     </div>
                 )}
 
-                {/* 🆕 Modal de Detalles del Producto */}
+                {/* Modal de Detalles del Producto */}
                 {showDetailModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 modal-overlay">
                         <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto modal-content">
@@ -341,31 +352,27 @@ const Products = () => {
                                             </p>
                                         </div>
 
-                                        {/* Fechas (si existen) */}
-                                        {(productDetail.createdAt || productDetail.fecha_creacion) && (
-                                            <div className="border-t pt-4">
-                                                <div className="flex items-center space-x-2 mb-3">
-                                                    <Calendar className="h-5 w-5 text-gray-600" />
-                                                    <h3 className="text-sm font-semibold text-gray-700 uppercase">Información de Registro</h3>
+                                        {/* Fechas */}
+                                        <div className="border-t pt-4">
+                                            <div className="flex items-center space-x-2 mb-3">
+                                                <Calendar className="h-5 w-5 text-gray-600" />
+                                                <h3 className="text-sm font-semibold text-gray-700 uppercase">Información de Registro</h3>
+                                            </div>
+                                            <div className="space-y-2 text-sm">
+                                                <div className="flex justify-between">
+                                                    <span className="text-gray-600">Fecha de creación:</span>
+                                                    <span className="font-semibold text-gray-900">
+                                                        {formatDate(productDetail.createdAt || productDetail.fecha_creacion)}
+                                                    </span>
                                                 </div>
-                                                <div className="space-y-2 text-sm">
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Fecha de creación:</span>
-                                                        <span className="font-semibold text-gray-900">
-                                                            {formatDate(productDetail.createdAt || productDetail.fecha_creacion)}
-                                                        </span>
-                                                    </div>
-                                                    {(productDetail.updatedAt || productDetail.fecha_actualizacion) && (
-                                                        <div className="flex justify-between">
-                                                            <span className="text-gray-600">Última actualización:</span>
-                                                            <span className="font-semibold text-gray-900">
-                                                                {formatDate(productDetail.updatedAt || productDetail.fecha_actualizacion)}
-                                                            </span>
-                                                        </div>
-                                                    )}
+                                                <div className="flex justify-between">
+                                                    <span className="text-gray-600">Última actualización:</span>
+                                                    <span className="font-semibold text-gray-900">
+                                                        {formatDate(productDetail.updatedAt || productDetail.fecha_actualizacion)}
+                                                    </span>
                                                 </div>
                                             </div>
-                                        )}
+                                        </div>
 
                                         {/* ID del Producto */}
                                         <div className="bg-gray-100 p-3 rounded-lg">
@@ -406,7 +413,7 @@ const Products = () => {
                     </div>
                 )}
 
-                {/* Modal Crear/Editar (Sin cambios) */}
+                {/* Modal Crear/Editar */}
                 {showModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 modal-overlay">
                         <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto modal-content">

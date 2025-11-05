@@ -9,6 +9,7 @@ export const productoTypeDefs = gql`
     stock: Int!
     categoria: String!
     activo: Boolean!
+    # Ambos formatos de fecha para compatibilidad
     fecha_creacion: String
     fecha_actualizacion: String
     createdAt: String
